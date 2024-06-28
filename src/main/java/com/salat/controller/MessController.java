@@ -1,6 +1,8 @@
 package com.salat.controller;
 
 import com.salat.dto.Message;
+import com.salat.dto.User;
+import com.salat.publisher.RabbitMQJsonProducer;
 import com.salat.publisher.RabbitMQProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MessController {
     private final RabbitTemplate rabbitTemplate;
     private final RabbitMQProducer rabbitMQProducer;
+    private final RabbitMQJsonProducer jsonProducer;
 
     @PostMapping
     public void postMessage(@RequestBody Message message) {
@@ -32,5 +35,11 @@ public class MessController {
     public ResponseEntity<String> sendMessage(@RequestParam("dniwe") String message) {
         rabbitMQProducer.sendMessage(message);
         return ResponseEntity.ok("Dno sent to rabbitMQ...........");
+    }
+
+    @PostMapping("/json")
+    public ResponseEntity<String> postJsonMessage(@RequestBody User user) {
+        jsonProducer.sendJsonMessage(user);
+        return ResponseEntity.ok("User sent to rabbitMQ.....<<<.....>>>.");
     }
 }
